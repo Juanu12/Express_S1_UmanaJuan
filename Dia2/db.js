@@ -1,20 +1,21 @@
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
 
-const uri = process.env.URI;
-const dbName = process.env.DB_NAME;
+let client;
 
-const client = new MongoClient(uri);
+async function connectDB() {
+  if (!client) {
+    client = new MongoClient(process.env.URI, {
+      maxPoolSize: 10,  // máximo número de conexiones 
+      minPoolSize: 2,   // número mínimo de conexiones que siempre estarán abiertas
+      serverSelectionTimeoutMS: 5000 // tiempo máximo de espera para seleccionar un servidor
+    });
 
-let db;
-
-async function conectarDB() {
-  if (!db) {
     await client.connect();
-    db = client.db(dbName);
-    console.log(`✅ Conectado a MongoDB en la BD: ${dbName}`);
+    console.log("✅ Conectado a MongoDB con pool de conexiones");
   }
-  return db;
+
+  return client.db(process.env.DB_NAME);
 }
 
-module.exports = conectarDB;
+module.exports = connectDB;

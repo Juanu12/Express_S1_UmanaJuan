@@ -1,10 +1,17 @@
-const express = require('express');
+const express = require("express");
+require("dotenv").config();
+
+const camperRoutes = require("./routes/camperRoute");
+
 const app = express();
 
 app.use(express.json());
 
-require("dotenv").config();
+// Rutas
+app.use("/campers", camperRoutes);
 
+// Puerto desde .env
 const PORT = process.env.PORT;
-const DB_NAME = process.env.DB_NAME;
-const URI = process.env.URI;
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+});
