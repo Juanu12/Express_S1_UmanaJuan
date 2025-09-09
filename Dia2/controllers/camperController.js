@@ -61,8 +61,20 @@ async function createCamper () {
 
 }
 
+async function removeCamper(req, res) {
+    try {
+      const { id } = req.params;
+      const result = await Camper.deleteCamper(id);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: "Error al eliminar camper", error });
+    }
+  }
+  
+
 
 module.exports = {
     getCampers,
     createCamper,
+    removeCamper
   };
