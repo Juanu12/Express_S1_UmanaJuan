@@ -5,6 +5,6 @@ const camperController = require("../controllers/camperController");
 router.get("/", camperController.getCampers);
 router.post("/", camperController.createCamper);
 router.delete("/:id", camperController.removeCamper);
-
+router.put("/:id", camperController.updateCamper );
 
 module.exports = router;

@@ -25,7 +25,7 @@ async function getCampers( req, res) {
 }
 
 
-async function createCamper () {
+async function createCamper (req, res) {
 
 
     try{
@@ -72,9 +72,27 @@ async function removeCamper(req, res) {
   }
   
 
+async function updateCamper(req, res) {
 
+
+    try {
+            const {id} = req.params;
+            const result = await Camper.updateCamper(id)
+            res.json(result)
+
+    } catch (error) {
+
+        res.status(500).json ({ message: "Error al actualizar camper", error});
+
+
+    }
+
+
+
+}
 module.exports = {
     getCampers,
     createCamper,
-    removeCamper
+    removeCamper,
+    updateCamper
   };

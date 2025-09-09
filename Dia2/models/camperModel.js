@@ -39,6 +39,19 @@ return {...camper, _id: result.insertedId}
 
 async function updateCamper() {
 
+ const db = await connectDB();
+
+ // Nos conectamos a la db, y actualizamos un dato
+
+ const result = await db.collection(COLLECTION).updateOne(camper);
+
+ // Copiamos los datos de camper 
+
+ return {...camper, _id: result.ObjectId}
+
+
+
+
 }
 
 
@@ -53,9 +66,9 @@ const db = await connectDB();
   const result = await db.collection(COLLECTION).deleteOne({ _id: new ObjectId(id) });
 
   if (result.deletedCount === 1) {
-    return { message: "✅ Camper eliminado", id };
+    return { message: " Camper eliminado", id };
   } else {
-    return { message: "⚠️ Camper no encontrado", id };
+    return { message: " Camper no encontrado", id };
   }
 };
 
