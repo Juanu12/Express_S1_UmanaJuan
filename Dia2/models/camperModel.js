@@ -44,11 +44,18 @@ async function updateCamper() {
 
 async function deleteCamper() {
 
+const db = await connectDB();
 
+// Nos conectamos a la db,  y eliminamos el camper convirtiendo el id string que se recibe a id normal
 
-}
+  const result = await db.collection(COLLECTION).deleteOne({ _id: new ObjectId(id) });
 
-
+  if (result.deletedCount === 1) {
+    return { message: "✅ Camper eliminado", id };
+  } else {
+    return { message: "⚠️ Camper no encontrado", id };
+  }
+};
 
 
 module.exports = {
