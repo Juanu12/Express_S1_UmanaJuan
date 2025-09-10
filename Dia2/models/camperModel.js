@@ -73,11 +73,23 @@ const db = await connectDB();
 };
 
 
+async function searchCamperById() {
+
+ const db = await connectDB();
+
+// Buscamos todos los camopers
+const result = await db.collection(COLLECTION).find().toArray();
+
+
+
+}
+
 module.exports = {
 
 getCampers,
 addCamper,
 updateCamper,
-deleteCamper
+deleteCamper,
+searchCamperById
 
 };

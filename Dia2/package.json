@@ -13,6 +13,7 @@
     "env": "^0.0.2",
     "express": "^5.1.0",
     "inquirer": "^12.9.4",
+    "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.19.0"
   }
 }

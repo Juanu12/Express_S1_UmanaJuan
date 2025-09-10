@@ -77,7 +77,7 @@ async function updateCamper(req, res) {
 
     try {
             const {id} = req.params;
-            const result = await Camper.updateCamper(id)
+            const result = await Camper.updateCamper(id);
             res.json(result)
 
     } catch (error) {
@@ -90,9 +90,31 @@ async function updateCamper(req, res) {
 
 
 }
+
+async function searchCamperById(req, res) {
+
+    try {
+
+        const {id} = req.params;
+        const result = await camper.searchCamperById(id);
+        res.json(result)
+
+    } catch(error) {
+
+        res.status.json ({ message: "Error al buscar el camper",error    })
+    }
+
+
+
+}
+
+
+
+
 module.exports = {
     getCampers,
     createCamper,
     removeCamper,
-    updateCamper
+    updateCamper,
+    searchCamperById
   };
