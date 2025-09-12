@@ -25,7 +25,7 @@ class UserClass {
         return (this.age ?? 0) >=18;
     }
     static async findByEmail(email) {
-        return this.findOne(email);
+        return this.findOne({email});
 
 
     }
@@ -40,7 +40,33 @@ class UserClass {
 
              return await this.create(data); 
     }
+
+
+    static async deleteUser(id) {
+
+        return await this.findByIdAndDelete(id); 
+
+    }
     
+    static async findAll() {
+
+        return await this.findAll();
+
+    }
+
+    static async updateUser(id, data) {
+
+        return await this.findByIdandUpdate(
+
+            id,
+            data,
+
+            {new: true, runValidators: true} // Sirve para validar y crear el nuevo elemento 
+
+
+        );
+    }
+
 };
 
 

@@ -25,6 +25,9 @@ export class UserService{
          */
     }
     async listUser(){
+
+      return await User.find().limit(10);
+
         /*
         Limitar a exportar máximo 10 */
     }
