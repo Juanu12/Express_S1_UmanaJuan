@@ -5,7 +5,7 @@ export class userController {
 
     }
 
-    // Ojo aqui ya manamos el body, parametros.. del request
+    // Ojo aqui ya mandamos el body, parametros.. del request
     create = async (req, res) =>{};
     list = async (req, res) => {};
     get = async (req, res) => {}; // Obtener id desde el endpoint 

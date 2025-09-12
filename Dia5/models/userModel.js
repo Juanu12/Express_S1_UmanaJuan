@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 const UserSchema = new mongoose.Schema ({
 
     name: {type:String, required:true, trim: true },
@@ -29,6 +30,17 @@ class UserClass {
 
     }
 
+
+    static async findById(id) {
+        return this.findOne({ _id: mongoose.Types.ObjectId(id) })
+    }
+
+
+    static async createUser(data){
+
+             return await this.create(data); 
+    }
+    
 };
 
 
