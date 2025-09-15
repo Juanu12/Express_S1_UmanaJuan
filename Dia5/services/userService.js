@@ -18,7 +18,7 @@ export class UserService {
     }
 
     async listUser() {
-        // Retorna máximo 10 usuarios
+        // Retornar máximo 10 usuarios
         return this.repo.findAll();
     }
 
