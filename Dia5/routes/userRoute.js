@@ -1,14 +1,13 @@
-import {Router} from "express"
+import { Router } from "express";
 
-// La vista
-
-export function buildUserRouter(UserController){
-
+export function buildUserRouter(controller) {
     const router = Router();
-    router.get("/".UserController.list)
-    router.get("/:id".UserController.get)
-    router.post("/".UserController.create)
-    router.put("/:id".UserController.update)
-    router.delete("/:id".UserController.delete)
 
+    router.get("/", controller.list);
+    router.get("/:id", controller.get);
+    router.post("/", controller.create);
+    router.put("/:id", controller.update);
+    router.delete("/:id", controller.delete);
+
+    return router;
 }

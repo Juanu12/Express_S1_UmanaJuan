@@ -1,41 +1,36 @@
-export class UserService{
-
-    constructor(userRepository){
-         this.repo = userRepository
-    }
-    async createUser(dto){
-
-// Aqui cuenta y revisa los emails de usuarios si existe es 1,, sino,  es 0 
-
-  const exists = await User.countDocuments({ email: userData.email });
-
-
-  // Si existe , lanza el error
-    if (exists > 0) {
-      throw new Error("El correo ya está registrado");
-
-
-
-    
+export class UserService {
+    constructor(userRepository) {
+        this.repo = userRepository; // Guardamos la instancia del Repository
     }
 
-        /*
-        Lógica para cuando se ingrese el correo
-        pues no esté existente...
-         */
-    }
-    async listUser(){
+    async createUser(userData) {
+       
+        // Busca si ya existe un usuario con el mismo email
+        const existingUser = await this.repo.findByEmail(userData.email);
 
-      return await User.find().limit(10);
+        // Si existe, lanza el error
+        if (existingUser) {
+            throw new Error("El correo ya está registrado");
+        }
 
-        /*
-        Limitar a exportar máximo 10 */
+       // Sino existe muestra la data
+        return this.repo.create(userData);
     }
-    async getUser(id){
+
+    async listUser() {
+        // Retorna máximo 10 usuarios
+        return this.repo.findAll();
+    }
+
+    async getUser(id) {
         return this.repo.findById(id);
     }
-    async updateUser(id,dto){}
-    async deleteUser(id){}
+
+    async updateUser(id, dto) {
+        return this.repo.updateById(id, dto);
+    }
+
+    async deleteUser(id) {
+        return this.repo.deleteById(id);
+    }
 }
-
-

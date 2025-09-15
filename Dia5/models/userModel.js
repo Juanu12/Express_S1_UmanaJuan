@@ -47,16 +47,12 @@ class UserClass {
         return await this.findByIdAndDelete(id); 
 
     }
-    
-    static async findAll() {
-
-        return await this.findAll();
-
+   static async findAll() {
+        return await this.find(); 
     }
-
     static async updateUser(id, data) {
 
-        return await this.findByIdandUpdate(
+        return await this.findByIdAndUpdate(
 
             id,
             data,
@@ -75,4 +71,4 @@ UserSchema.loadClass(UserClass)
 
 
 
-export const UserModel = mongoose.model("User".UserSchema)
+export const UserModel = mongoose.model("User", UserSchema);

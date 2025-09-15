@@ -1,6 +1,7 @@
 import mongoose from "mongoose"; 
-require("dotenv").config
+import dotenv from "dotenv";  
 
+dotenv.config();  
 
 // Creamos la clase de la base de datos con la uri como constructor
 export class Database {

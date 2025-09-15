@@ -7,7 +7,7 @@ import {Database} from "./config/db.js"
 // Importacion MVC 
 
 import { UserModel } from "./models/userModel.js";
-import { userController } from "./controllers/userController.js";
+import { UserController } from "./controllers/userController.js";
 import { UserRepository } from "./repositories/userRepository.js";
 import { buildUserRouter } from "./routes/userRoute.js";
 import { UserService } from "./services/userService.js";
@@ -19,7 +19,7 @@ class App{
         this.db= new Database(process.env.MONGODB_URI);
     }
     async init(){
-        await this.db.connect;
+        await this.db.connect();
         this.app.use(express.json());//Middleware básico para JSON
         this.app.get("/", (req,res)=>{
             res.json({
@@ -39,7 +39,9 @@ class App{
     this.app.listen(this.port,()=>{
         console.log("Server running on :"+this.port);
     })
+    
 }
+
 }
 const app = new App();
 app.init();

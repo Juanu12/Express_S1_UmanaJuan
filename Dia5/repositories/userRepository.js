@@ -7,8 +7,9 @@ export class UserRepository{
     async create(data){
         return this.User.create(data);
     }
-    async findAll(){
-        return this.User.find();
+   async findAll(limit = 10) {
+        // Limitar máximo 10 usuarios
+        return this.User.find().limit(limit);
     }
     async findByID(id){
 

@@ -1,0 +1,158 @@
+openapi: 3.0.0
+info:
+  title: API CRUD de Usuarios
+  version: 1.0.0
+  description: API para gestionar usuarios con MongoDB y Mongoose
+
+servers:
+  - url: http://localhost:3000/api
+
+paths:
+  /users:
+    get:
+      summary: Listar todos los usuarios
+      responses:
+        "200":
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "500":
+          description: Error interno del servidor
+
+    post:
+      summary: Crear un nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "201":
+          description: Usuario creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Datos inválidos enviados por el cliente
+        "500":
+          description: Error interno del servidor
+
+  /users/{id}:
+    get:
+      summary: Obtener un usuario por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del usuario en MongoDB
+      responses:
+        "200":
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: ID inválido
+        "404":
+          description: Usuario no encontrado
+        "500":
+          description: Error interno del servidor
+
+    put:
+      summary: Actualizar un usuario por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del usuario en MongoDB
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "200":
+          description: Usuario actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Datos inválidos o ID malformado
+        "404":
+          description: Usuario no encontrado
+        "500":
+          description: Error interno del servidor
+
+    delete:
+      summary: Eliminar un usuario por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del usuario en MongoDB
+      responses:
+        "200":
+          description: Usuario eliminado
+        "400":
+          description: ID inválido
+        "404":
+          description: Usuario no encontrado
+        "500":
+          description: Error interno del servidor
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "650ff9f83d1f3a4cbb77a8e2"
+        name:
+          type: string
+          example: "Juan Pérez"
+        email:
+          type: string
+          example: "juan@example.com"
+        age:
+          type: integer
+          example: 25
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-09-11T19:32:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-09-11T19:40:00.000Z"
+
+    UserInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "María López"
+        email:
+          type: string
+          example: "maria@example.com"
+        age:
+          type: integer
+          example: 30
+      required:
+        - name
+        - email
