@@ -1,6 +1,6 @@
 import {MongoClient, ObjectOd} from "mongodb"
 import dotenv from "dotenv";
-
+dotenv.config();
 export default class UserModel {
 
     constructor() {
@@ -13,10 +13,13 @@ export default class UserModel {
 
 
     async connect() {
-        if (db) return db
-        await this.client.connect()
-        db = this.client.db(this.dbName)
-        return db.collection("users");
+        // Revisa si ya estaba conectado de antes, sino deja entrar a la db
+       if(!this.client.topology?.isConnected()){
+        await this.client.connect();
+
+       }
+
+       return this.client.db(this.dbName).collection("users")
 
 
     }
@@ -30,10 +33,10 @@ export default class UserModel {
         async findUserbyEmail(email){
 
             const collection = await this.connect()
-            return await collection.find({email});
+            return await collection.findOne({email});
         }
 
-        async deleteUser(id, data) {
+        async deleteUser(id) {
             const collection = await this.connect()
             return await collection.deleteOne(id);
         }
@@ -50,8 +53,10 @@ export default class UserModel {
 
         }
 
-        async updateUser(id , data) {
+        async updateUser(id , newData) {
             const collection = await this.connect()
-            return await collection.updateOne(id);
+            return await collection.updateOne({
+                _id: new ObjectId(id)
+            }, {$set:newData});
         }
 }
