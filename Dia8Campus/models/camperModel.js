@@ -1,94 +1,76 @@
 import connectDB from "../config/db.js";
 import { ObjectId } from "mongodb";
+import bcrypt from "bcrypt";
 
+// importamos bcrypt , los ids de mongo  y la db
 
-
+// nombramos la coleccion a acceder
 const COLLECTION = "campers";
 
+// creamos la clase 
+export class CamperModel {
 
-async function getCampers() {
+    // se recibe la data
+  async registrar(camperData) {
 
-const db = await connectDB();
+    // se conecta a la db, buscando que ese camper  exista, si existe, lanza error
+    const db = await connectDB();
+    const existing = await db.collection(COLLECTION).findOne({ username: camperData.username });
+    if (existing) throw new Error("Username ya existe");
 
-// Nos conectamos a la db , encontramos y volvemos array los campers
-
-return db.collection(COLLECTION).find().toArray();
-
-
-}
-
-
-async function addCamper() {
-
-const db = await connectDB();
-
-// Nos conectamos a la db, para insertar un nuevo camper
-
-const result =  await db.collection(COLLECTION).insertOne(camper);
-
-
-// copiamos los datos que nos de camper, y para id, le decimos que ponga el id del nuevo objeto que creó
-
-return {...camper, _id: result.insertedId}
-
-
-}
-
-
-
-async function updateCamper() {
-
- const db = await connectDB();
-
- // Nos conectamos a la db, y actualizamos un dato
-
- const result = await db.collection(COLLECTION).updateOne(camper);
-
- // Copiamos los datos de camper 
-
- return {...camper, _id: result.ObjectId}
-
-
-
-
-}
-
-
-
-
-async function deleteCamper() {
-
-const db = await connectDB();
-
-// Nos conectamos a la db,  y eliminamos el camper convirtiendo el id string que se recibe a id normal
-
-  const result = await db.collection(COLLECTION).deleteOne({ _id: new ObjectId(id) });
-
-  if (result.deletedCount === 1) {
-    return { message: " Camper eliminado", id };
-  } else {
-    return { message: " Camper no encontrado", id };
+    // Si no existe, hashea la contrasaeña y añade todos los datos, devolviendo el json
+    camperData.password = await bcrypt.hash(camperData.password, 10);
+    const result = await db.collection(COLLECTION).insertOne(camperData);
+    return { ...camperData, _id: result.insertedId };
   }
-};
 
+  async login(username, password) {
+    const db = await connectDB();
+    const camper = await db.collection(COLLECTION).findOne({ username });
+    if (!camper) throw new Error("Usuario no encontrado");
 
-async function searchCamperById() {
+    const valid = await bcrypt.compare(password, camper.password);
+    if (!valid) throw new Error("Contraseña incorrecta");
 
- const db = await connectDB();
+    return camper;
+  }
 
-// Buscamos todos los camopers
-const result = await db.collection(COLLECTION).find().toArray();
+  async getCampers() {
+    const db = await connectDB();
+    return db.collection(COLLECTION).find().toArray();
+  }
 
+  async addCamper(camper) {
+    const db = await connectDB();
+    const result = await db.collection(COLLECTION).insertOne(camper);
+    return { ...camper, _id: result.insertedId };
+  }
 
+  async updateCamper(id, camper) {
+    const db = await connectDB();
+    await db.collection(COLLECTION).updateOne({ _id: new ObjectId(id) }, { $set: camper });
+    return { ...camper, _id: id };
+  }
 
+  async deleteCamper(id) {
+    const db = await connectDB();
+    const result = await db.collection(COLLECTION).deleteOne({ _id: new ObjectId(id) });
+    if (result.deletedCount === 1) return { message: "Camper eliminado", id };
+    else return { message: "Camper no encontrado", id };
+  }
+
+  async searchCamperById(id) {
+    const db = await connectDB();
+    return db.collection(COLLECTION).findOne({ _id: new ObjectId(id) });
+  }
+
+  async findById(id) {
+    const db = await connectDB();
+    return db.collection(COLLECTION).findOne({ _id: new ObjectId(id) });
+  }
+
+  async findByUsername(username) {
+    const db = await connectDB();
+    return db.collection(COLLECTION).findOne({ username });
+  }
 }
-
-module.exports = {
-
-getCampers,
-addCamper,
-updateCamper,
-deleteCamper,
-searchCamperById
-
-};

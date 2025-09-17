@@ -20,6 +20,10 @@ passport.use (
 new JwtStrategy ( opts, async (jwt_payload, done) => {
 
 try{
+
+
+    // done = firma
+
     // Buscamos en el modelo en la informacion de los campers po su id , con el del payload
     // verificamos
     const camper = await CamperModel.findById(jwt_payload.id);
@@ -28,8 +32,9 @@ try{
     // que es nulo, y devuelve el camper que encontro 
     if (camper) return done (null, camper)
 
+    // Si no se encuentra, retorna false
     return done(null, false);
-
+    // (error, user, info(opcional))
 } catch(error) {
     return done(error, false)
 }
@@ -38,3 +43,5 @@ try{
 
 
 );
+
+export default passport;
