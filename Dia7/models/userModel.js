@@ -1,4 +1,4 @@
-import {MongoClient, ObjectOd} from "mongodb"
+import {MongoClient, ObjectId} from "mongodb"
 import dotenv from "dotenv";
 dotenv.config();
 export default class UserModel {
