@@ -1,7 +1,7 @@
 import passport from "passport";
 // Plugin para usar jwt, Importamos strategy que es un comando de passport con jwt
 // lo renmbremos y con extract luego se va a poder extraer la info de los tokens
-import { Strategy as JwtStrategy, ExtractJwt  } from "passport-strategy";
+import { Strategy as JwtStrategy, ExtractJwt  } from "passport-jwt";
 import { CamperModel } from "../models/CamperModel.js";
 
 
@@ -26,7 +26,7 @@ try{
 
     // Buscamos en el modelo en la informacion de los campers po su id , con el del payload
     // verificamos
-    const camper = await CamperModel.findById(jwt_payload.id);
+    const camper = await CamperModel.searchCamperById(jwt_payload.id);
 
     // en el () hay dos vaores, null o error, para el apartado de errores 
     // que es nulo, y devuelve el camper que encontro 

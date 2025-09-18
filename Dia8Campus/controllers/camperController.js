@@ -1,120 +1,108 @@
-const Camper = require ('../models/camperModel')
+
+// importamos el modelo y el jsonwebtoken
+import { CamperModel } from "../models/CamperModel.js";
+import jwt from "jsonwebtoken";
 
 
-async function getCampers( req, res) {
+// creamos un nuevo modelo
+const camperModel = new CamperModel();
 
+// Creamos la clase del controlador
+export class CamperController {
+  // Revisamos la req y damos res 
+
+  register = async (req, res) => {
+    // se sacan los datos de registro del body y se verifica que existan
     try {
-        const campers = await Camper.getCampers();
-        res.json(campers);
+      const { username, password, nombre, cedula, role } = req.body;
+      if (!username || !password || !nombre || !cedula) {
+        return res.status(400).json({ message: "Faltan datos" });
+      }
 
+      const newCamper = await camperModel.register({
+        username,
+        password,
+        nombre,
+        cedula,
+        role: role || "camper" // por defecto es camper
+      });
 
+      const token = jwt.sign(
+        { id: newCamper._id, username: newCamper.username, role: newCamper.role },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
 
-    } catch  (error) {
-
-        res.status(500).json({ message: "Error al obtener los campers", error });
-
-
-
-    
-
-    }
-
-
-
-
-}
-
-
-async function createCamper (req, res) {
-
-
-    try{
-
-        const camper = req.body;
-
-        if (!camper || !camper.cedula || !camper.nombre) {
-
-
-            return res.status(400).json ({ message: "Datos inválidos"  })
-
-
-        }
-
-
-
-        const newCamper = await Camper.addCamper(camper);
-        res.status(201).json(newCamper)
-
-
-
-
+      res.status(201).json({ message: "Camper registrado", token, camper: newCamper });
     } catch (error) {
-
-
-
-            res.status(500).json({message: "Error al crear camper", error})
-
+      res.status(400).json({ error: error.message });
     }
+  };
 
+  // Login
+  login = async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      const camper = await camperModel.login(username, password);
+      const token = jwt.sign(
+        { id: camper._id, username: camper.username, role: camper.role },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
 
+      res.json({ message: "Login exitoso", token, camper });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  };
 
+  // CRUD
+  getCampers = async (req, res) => {
+    try {
+      const campers = await camperModel.getCampers();
+      res.json(campers);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 
-}
+  createCamper = async (req, res) => {
+    try {
+      const camper = req.body;
+      const newCamper = await camperModel.addCamper(camper);
+      res.status(201).json(newCamper);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 
-async function removeCamper(req, res) {
+  removeCamper = async (req, res) => {
     try {
       const { id } = req.params;
-      const result = await Camper.deleteCamper(id);
+      const result = await camperModel.deleteCamper(id);
       res.json(result);
     } catch (error) {
-      res.status(500).json({ message: "Error al eliminar camper", error });
+      res.status(500).json({ error: error.message });
     }
-  }
-  
-
-async function updateCamper(req, res) {
-
-
-    try {
-            const {id} = req.params;
-            const result = await Camper.updateCamper(id);
-            res.json(result)
-
-    } catch (error) {
-
-        res.status(500).json ({ message: "Error al actualizar camper", error});
-
-
-    }
-
-
-
-}
-
-async function searchCamperById(req, res) {
-
-    try {
-
-        const {id} = req.params;
-        const result = await camper.searchCamperById(id);
-        res.json(result)
-
-    } catch(error) {
-
-        res.status.json ({ message: "Error al buscar el camper",error    })
-    }
-
-
-
-}
-
-
-
-
-module.exports = {
-    getCampers,
-    createCamper,
-    removeCamper,
-    updateCamper,
-    searchCamperById
   };
+
+  updateCamper = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const result = await camperModel.updateCamper(id, req.body);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  searchCamperById = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const camper = await camperModel.searchCamperById(id);
+      res.json(camper);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+}
