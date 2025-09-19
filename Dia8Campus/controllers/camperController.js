@@ -19,6 +19,7 @@ export class CamperController {
         return res.status(400).json({ message: "Faltan datos" });
       }
 
+      // Se crea el camper y se le da su role de camper
       const newCamper = await camperModel.register({
         username,
         password,
@@ -27,6 +28,7 @@ export class CamperController {
         role: role || "camper" // por defecto es camper
       });
 
+        // Se crea el token que contiene id , usuario y rol-
       const token = jwt.sign(
         { id: newCamper._id, username: newCamper.username, role: newCamper.role },
         process.env.JWT_SECRET,
@@ -56,7 +58,7 @@ export class CamperController {
     }
   };
 
-  // CRUD
+  // Busca las funciones crud del model
   getCampers = async (req, res) => {
     try {
       const campers = await camperModel.getCampers();
